@@ -80,6 +80,96 @@ module.exports = {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
         },
+        // 新增动画效果
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        pulse-glow: {
+          '0%, 100%': {
+            opacity: 0.3,
+            transform: 'scale(1)',
+          },
+          '50%': {
+            opacity: 0.8,
+            transform: 'scale(1.05)',
+          },
+        },
+        gradient-shift: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+        slide-up: {
+          '0%': {
+            opacity: 0,
+            transform: 'translateY(20px)',
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'translateY(0)',
+          },
+        },
+        slide-down: {
+          '0%': {
+            opacity: 0,
+            transform: 'translateY(-20px)',
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'translateY(0)',
+          },
+        },
+        scale-in: {
+          '0%': {
+            opacity: 0,
+            transform: 'scale(0.9)',
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'scale(1)',
+          },
+        },
+        bounce-in: {
+          '0%': {
+            opacity: 0,
+            transform: 'scale(0.3)',
+          },
+          '50%': {
+            opacity: 1,
+            transform: 'scale(1.05)',
+          },
+          '70%': {
+            transform: 'scale(0.9)',
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'scale(1)',
+          },
+        },
+        ripple: {
+          '0%': {
+            transform: 'scale(0)',
+            opacity: 1,
+          },
+          '100%': {
+            transform: 'scale(4)',
+            opacity: 0,
+          },
+        },
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-2px)' },
+          '20%, 40%, 60%, 80%': { transform: 'translateX(2px)' },
+        },
+        wiggle: {
+          '0%, 7%': { transform: 'rotateZ(0deg)' },
+          '15%': { transform: 'rotateZ(-15deg)' },
+          '20%': { transform: 'rotateZ(10deg)' },
+          '25%': { transform: 'rotateZ(-10deg)' },
+          '30%': { transform: 'rotateZ(6deg)' },
+          '35%': { transform: 'rotateZ(-4deg)' },
+          '40%, 100%': { transform: 'rotateZ(0deg)' },
+        },
       },
       animation: {
         'spin-slow': 'spin 2s linear infinite',
@@ -88,6 +178,18 @@ module.exports = {
         'loading-dot': 'dotBounce 1.4s infinite ease-in-out',
         shimmer: 'shimmer 2s infinite linear',
         'glow-band': 'glowBand 1.5s infinite linear',
+        // 新增动画类
+        'float': 'float 3s ease-in-out infinite',
+        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+        'gradient-shift': 'gradient-shift 3s ease infinite',
+        'slide-up': 'slide-up 0.3s ease-out',
+        'slide-down': 'slide-down 0.3s ease-out',
+        'scale-in': 'scale-in 0.2s ease-out',
+        'bounce-in': 'bounce-in 0.6s ease-out',
+        'ripple': 'ripple 0.6s ease-out',
+        'shake': 'shake 0.5s ease-in-out',
+        'wiggle': 'wiggle 0.5s ease-in-out',
+        'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
       },
       width: {
         sider: '60px',

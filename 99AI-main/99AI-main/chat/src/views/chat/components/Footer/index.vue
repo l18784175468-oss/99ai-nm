@@ -1369,6 +1369,214 @@ const shouldShowButtonText = computed(() => {
 })
 </script>
 
+<style scoped>
+/* 响应式布局优化 */
+.footer-component {
+  transition: all 0.3s ease;
+}
+
+/* 新增动画效果 */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* 按钮交互增强 */
+.group button {
+  position: relative;
+  overflow: hidden;
+}
+
+.group button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.group:hover button::before {
+  left: 100%;
+}
+
+/* 输入框增强 */
+textarea {
+  position: relative;
+}
+
+textarea:focus {
+  transform: scale(1.01);
+}
+
+/* 工具提示增强 */
+.tooltip {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+/* 文件上传区域增强 */
+.group:hover .group-hover\:scale-110 {
+  transform: scale(1.1);
+}
+
+/* 加载动画增强 */
+.animate-rotate {
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 波纹效果 */
+.group-active .group-active\:scale-100 {
+  animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+/* 移动端优化 */
+@media (max-width: 640px) {
+  .footer-component {
+    padding: 0.5rem;
+  }
+  
+  .footer-component .button-container {
+    gap: 0.25rem;
+  }
+  
+  .footer-component .tooltip {
+    display: none;
+  }
+  
+  .footer-component textarea {
+    font-size: 16px; /* 防止iOS缩放 */
+  }
+}
+
+/* 暗色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .footer-component .glass-effect {
+    background-color: rgba(17, 24, 39, 0.7) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .footer-component .glass-card {
+    background: rgba(31, 41, 55, 0.5) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(75, 85, 99, 0.2);
+  }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  .footer-component .hover-scale:hover {
+    transform: none;
+  }
+  
+  .footer-component .hover-glow:hover {
+    box-shadow: none;
+  }
+  
+  .footer-component button {
+    min-height: 44px; /* 增大触摸目标 */
+    min-width: 44px;
+  }
+  
+  .footer-component .tooltip {
+    display: none;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .footer-component .glass-effect {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .footer-component .glass-card {
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* 减少动画偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+  .footer-component .transition-all {
+    transition: none;
+  }
+  
+  .footer-component .animate-pulse,
+  .footer-component .animate-ping,
+  .footer-component .animate-rotate {
+    animation: none;
+  }
+}
+
+/* 键盘导航支持 */
+.footer-component button:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+.dark .footer-component button:focus-visible {
+  outline-color: #818cf8;
+}
+
+/* 自定义滚动条样式 */
+.footer-component .custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.footer-component .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.footer-component .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.footer-component .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.dark .footer-component .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark .footer-component .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dark .footer-component .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+</style>
+
 <template>
   <div>
     <!-- 移除全屏蒙版 -->
@@ -1383,64 +1591,89 @@ const shouldShowButtonText = computed(() => {
     >
       <footer
         ref="footerRef"
-        class="flex flex-col items-center justify-center w-full bg-transparent"
+        class="flex flex-col items-center justify-center w-full bg-transparent group"
         :class="[dataSources.length > 0 ? 'max-w-4xl' : 'max-w-3xl']"
         @dragover="handleDragOver"
         @dragleave="handleDragLeave"
         @drop="handleDrop"
       >
         <div
-          class="flex w-full border border-gray-400 dark:border-gray-700 hover:ring-1 hover:ring-primary-500 dark:hover:ring-primary-500 focus-within:ring-1 focus-within:ring-primary-500 dark:focus-within:ring-primary-500 justify-center items-center flex-col rounded-3xl resize-none px-2 transition-all duration-200"
+          class="flex w-full justify-center items-center flex-col rounded-3xl resize-none px-2 transition-all duration-300 relative overflow-hidden"
           :class="{
-            'ring-1 ring-primary-500 dark:ring-primary-500': isDragging,
-            'bg-gray-50 dark:bg-gray-700/80': isFileDraggingOverPage,
+            'ring-2 ring-primary-500/50 dark:ring-primary-400/50 shadow-2xl shadow-primary-500/20': isDragging,
+            'bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl': !isFileDraggingOverPage,
+            'bg-gray-50/90 dark:bg-gray-700/90 backdrop-blur-xl border-2 border-dashed border-primary-300/50 dark:border-primary-600/50': isFileDraggingOverPage,
           }"
-          :style="{ minHeight: '1.5rem', position: 'relative' }"
+          :style="{ minHeight: '1.5rem' }"
         >
-          <!-- 移除多余的内部提示层 -->
-
+          <!-- 多层背景装饰效果 -->
+          <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-purple-500/5 pointer-events-none"></div>
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div v-if="isDragging" class="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-purple-500/10 pointer-events-none animate-pulse"></div>
+          <!-- 动态光效 -->
+          <div class="absolute inset-0 bg-gradient-to-r from-primary-500/3 via-transparent to-purple-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <!-- 应用搜索建议 -->
           <div
             v-if="showSuggestions && !isSelectedApp && searchResults.length !== 0"
-            class="w-full z-50 bg-white my-2 px-1 py-1 justify-center items-center flex-col rounded-2xl resize-none dark:bg-gray-800 border border-gray-400 dark:border-gray-700"
+            class="w-full z-50 my-2 px-1 py-1 justify-center items-center flex-col rounded-2xl resize-none"
+            :class="[
+              'bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-200/60 dark:border-gray-700/60 shadow-xl',
+              'transform transition-all duration-300',
+              props.dataSourcesLength || isMobile ? 'translate-y-0' : '-translate-y-full'
+            ]"
             :style="{
               minHeight: '1.5rem',
               position: 'absolute',
               top: props.dataSourcesLength || isMobile ? 'auto' : '100%',
               bottom: props.dataSourcesLength || isMobile ? '100%' : 'auto',
               left: '50%',
-              transform: 'translateX(-50%)',
+              transform: `translateX(-50%) ${props.dataSourcesLength || isMobile ? '' : 'translateY(-100%)'}`,
             }"
           >
-            <div
-              v-if="searchResults.length !== 0"
-              v-for="app in searchResults"
-              :key="app.id"
-              @click="selectApp(app)"
-              class="flex items-center bg-white dark:bg-gray-800 hover:bg-opacity py-2 px-2 dark:hover:bg-gray-700 rounded-2xl w-full cursor-pointer duration-150 ease-in-out"
-            >
+            <div class="max-h-60 overflow-y-auto custom-scrollbar py-1">
               <div
-                class="w-8 h-8 flex-shrink-0 rounded-full flex items-center justify-center overflow-hidden shadow-sm border border-gray-300 mr-3"
+                v-for="app in searchResults"
+                :key="app.id"
+                @click="selectApp(app)"
+                class="flex items-center mx-1 my-1 p-3 rounded-xl cursor-pointer transition-all duration-200 hover:bg-gray-100/80 dark:hover:bg-gray-700/80 hover:scale-[1.02] hover:shadow-md group"
               >
-                <img
-                  v-if="app.coverImg"
-                  :src="app.coverImg"
-                  alt="Cover Image"
-                  class="w-8 h-8 rounded-full flex justify-start"
-                />
-                <span
-                  v-else
-                  class="w-8 h-8 text-base font-medium text-gray-700 dark:text-gray-400 rounded-full flex items-center justify-center dark:bg-gray-700"
+                <div
+                  class="w-10 h-10 flex-shrink-0 rounded-xl flex items-center justify-center overflow-hidden shadow-sm border border-gray-200/50 dark:border-gray-600/50 mr-3 bg-white dark:bg-gray-800 group-hover:shadow-md transition-all duration-200"
                 >
-                  {{ app.name.charAt(0) }}
-                </span>
-              </div>
+                  <img
+                    v-if="app.coverImg"
+                    :src="app.coverImg"
+                    alt="Cover Image"
+                    class="w-full h-full object-cover"
+                  />
+                  <div
+                    v-else
+                    class="w-full h-full bg-gradient-to-br from-primary-400 to-purple-500 flex items-center justify-center"
+                  >
+                    <span class="text-white text-sm font-bold">
+                      {{ app.name.charAt(0) }}
+                    </span>
+                  </div>
+                </div>
 
-              <h3 class="text-md font-bold text-gray-600 dark:text-primary-500 mr-3 flex-shrink-0">
-                {{ app.name }}
-              </h3>
-              <p class="text-base text-gray-400 dark:text-gray-400 flex-grow truncate">
-                {{ app.des }}
-              </p>
+                <div class="flex-grow min-w-0">
+                  <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">
+                    {{ app.name }}
+                  </h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                    {{ app.des }}
+                  </p>
+                </div>
+                
+                <!-- 选择指示器 -->
+                <div class="ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div class="w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center">
+                    <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1453,77 +1686,89 @@ const shouldShowButtonText = computed(() => {
             @clear-data="clearData"
             @clear-select-app="clearSelectApp"
           />
-          <!-- 渐变阴影效果 -->
 
           <div class="relative w-full">
             <!-- 扩展按钮 - 只在内容高度超过阈值时显示 -->
-            <div v-if="shouldShowExpandButton" class="absolute right-1 top-2 z-10 group">
+            <div v-if="shouldShowExpandButton" class="absolute right-2 top-2 z-10 group">
               <button
                 @click="toggleExpanded"
-                class="btn-pill btn-sm"
+                class="relative w-8 h-8 rounded-xl bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 flex items-center justify-center hover:bg-white dark:hover:bg-gray-600 transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md"
                 :aria-label="isExpanded ? '收起输入框' : '展开输入框'"
               >
-                <OffScreen v-if="isExpanded" size="15" />
-                <FullScreen v-else size="15" />
+                <OffScreen v-if="isExpanded" size="16" class="text-gray-600 dark:text-gray-400" />
+                <FullScreen v-else size="16" class="text-gray-600 dark:text-gray-400" />
               </button>
-              <div v-if="!isMobile" class="tooltip tooltip-bottom">
-                {{ isExpanded ? '收起' : '展开' }}
+              <div v-if="!isMobile" class="tooltip tooltip-right">
+                {{ isExpanded ? '收起输入框' : '展开输入框' }}
               </div>
             </div>
 
-            <!-- 拖拽提示覆盖层 - 替代文本区域 -->
+            <!-- 拖拽提示覆盖层 -->
             <div
               v-if="isFileDraggingOverPage"
-              class="h-20 flex items-center justify-center my-2 w-full"
+              class="h-24 flex items-center justify-center my-3 w-full"
             >
               <div class="flex flex-col items-center justify-center">
-                <AddPicture
-                  size="28"
-                  class="mb-2"
-                  :class="
+                <div class="relative mb-3">
+                  <AddPicture
+                    size="32"
+                    :class="[
+                      'transition-all duration-300',
+                      isDragging
+                        ? 'text-primary-600 dark:text-primary-400 scale-110'
+                        : 'text-gray-500 dark:text-gray-400'
+                    ]"
+                  />
+                  <!-- 装饰环 -->
+                  <div v-if="isDragging" class="absolute inset-0 rounded-full border-2 border-primary-400 animate-ping"></div>
+                </div>
+                <p
+                  class="text-center text-sm font-medium transition-all duration-300"
+                  :class="[
                     isDragging
                       ? 'text-primary-600 dark:text-primary-400'
                       : 'text-gray-500 dark:text-gray-400'
-                  "
-                />
-                <p
-                  class="text-center text-sm"
-                  :class="
-                    isDragging
-                      ? 'text-primary-600 dark:text-primary-400 font-medium'
-                      : 'text-gray-500 dark:text-gray-400'
-                  "
+                  ]"
                 >
                   {{ isDragging ? '松开鼠标开始上传' : '拖放文件到这里上传' }}
                 </p>
               </div>
             </div>
 
-            <!-- 文本区域 - 非拖拽状态显示 -->
-            <textarea
-              v-show="!isFileDraggingOverPage"
-              ref="inputRef"
-              v-model="prompt"
-              :placeholder="placeholderText"
-              class="flex flex-grow items-center justify-center mt-3 mb-2 w-full placeholder:text-gray-400 dark:placeholder:text-gray-500 text-base resize-none dark:text-gray-400 px-2 bg-transparent custom-scrollbar transition-all duration-300 ease-in-out"
-              @input="autoResize"
-              @keypress="handleEnter"
-              @keyup="handleInput"
-              @paste="handlePaste"
-              :style="{
-                maxHeight: isExpanded ? 'none' : '30vh',
-                minHeight: '4rem',
-              }"
-              aria-label="聊天消息输入框"
-              role="textbox"
-            ></textarea>
+            <!-- 文本输入区域 -->
+            <div class="relative group">
+              <!-- 输入框光晕效果 -->
+              <div v-if="prompt" class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/20 to-purple-500/20 blur-lg pointer-events-none animate-pulse"></div>
+              <!-- 悬停光晕 -->
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md pointer-events-none"></div>
+              
+              <textarea
+                v-show="!isFileDraggingOverPage"
+                ref="inputRef"
+                v-model="prompt"
+                :placeholder="placeholderText"
+                class="relative w-full mt-3 mb-2 px-4 py-3 text-base resize-none bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-2xl placeholder:text-gray-500 dark:placeholder:text-gray-400 text-gray-800 dark:text-gray-200 custom-scrollbar transition-all duration-300 ease-in-out focus:bg-white/80 dark:focus:bg-gray-800/80 focus:border-primary-400/60 dark:focus:border-primary-500/60 focus:shadow-lg focus:shadow-primary-500/20 group-hover:bg-white/70 dark:group-hover:bg-gray-700/70 group-hover:border-primary-300/50 dark:group-hover:border-primary-600/50"
+                @input="autoResize"
+                @keypress="handleEnter"
+                @keyup="handleInput"
+                @paste="handlePaste"
+                :style="{
+                  maxHeight: isExpanded ? '70vh' : '30vh',
+                  minHeight: '4rem',
+                }"
+                aria-label="聊天消息输入框"
+                role="textbox"
+              ></textarea>
+              <!-- 输入框装饰角 -->
+              <div class="absolute top-1 right-1 w-3 h-3 bg-gradient-to-br from-primary-400 to-purple-500 rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+            </div>
           </div>
 
           <!-- 按钮容器 -->
-          <div ref="buttonContainerRef" class="flex justify-between flex-grow w-full pb-2">
-            <!-- 文件上传按钮区域 -->
-            <div class="flex justify-start items-center">
-              <!-- 统一的文件/图片上传按钮 -->
+          <div ref="buttonContainerRef" class="flex justify-between flex-grow w-full pb-3 px-1">
+            <!-- 左侧功能按钮区域 -->
+            <div class="flex justify-start items-center gap-1">
+              <!-- 文件上传按钮 -->
               <div
                 v-if="showUploadButton && !isUploading"
                 class="group relative"
@@ -1550,22 +1795,30 @@ const shouldShowButtonText = computed(() => {
               >
                 <button
                   type="button"
-                  class="btn-pill mx-1"
+                  class="relative w-9 h-9 rounded-xl bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 flex items-center justify-center hover:bg-white dark:hover:bg-gray-600 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg group overflow-hidden"
                   @click="triggerUpload"
                   :aria-label="uploadButtonTooltip"
                 >
-                  <Plus size="15" />
+                  <Plus size="18" class="text-gray-600 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-all duration-300 relative z-10" />
+                  <!-- 悬停光晕 -->
+                  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <!-- 波纹效果 -->
+                  <div class="absolute inset-0 rounded-xl bg-primary-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
                 </button>
                 <div v-if="!isMobile" class="tooltip tooltip-top">{{ uploadButtonTooltip }}</div>
               </div>
 
-              <LoadingFour
-                v-if="isUploading"
-                size="15"
-                class="p-1 mx-2 animate-rotate text-gray-500 dark:text-gray-500"
-              />
+              <!-- 上传加载状态 -->
+              <div v-if="isUploading" class="relative w-9 h-9 rounded-xl bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 flex items-center justify-center shadow-sm">
+                <LoadingFour
+                  size="18"
+                  class="animate-rotate text-primary-600 dark:text-primary-400"
+                />
+                <!-- 加载动画光环 -->
+                <div class="absolute inset-0 rounded-xl border-2 border-primary-500/30 animate-ping"></div>
+              </div>
 
-              <!-- 隐藏的文件输入框 - 保持原有的两个input，但共用同一个按钮触发 -->
+              <!-- 隐藏的文件输入框 -->
               <input ref="fileInput" type="file" class="hidden" @change="handleFileSelect" />
               <input
                 ref="imageInput"
@@ -1575,85 +1828,133 @@ const shouldShowButtonText = computed(() => {
                 @change="handleImageSelect"
               />
 
+              <!-- 深度思考按钮 -->
               <div v-if="shouldShowDeepThinking" class="group relative">
-                <div
-                  class="btn-pill btn-md mx-1"
-                  :class="[usingDeepThinking ? 'btn-pill-active' : '']"
+                <button
+                  type="button"
+                  class="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg overflow-hidden"
+                  :class="[
+                    usingDeepThinking
+                      ? 'bg-gradient-to-r from-purple-500/30 to-pink-500/30 border-purple-300/60 dark:border-purple-600/60 text-purple-600 dark:text-purple-400 shadow-md'
+                      : 'bg-white/70 dark:bg-gray-700/70 border-gray-200/50 dark:border-gray-600/50 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-600'
+                  ]"
                   @click="usingDeepThinking = !usingDeepThinking"
                   role="button"
                   :aria-pressed="usingDeepThinking"
                   aria-label="启用或禁用推理功能"
                   tabindex="0"
                 >
-                  <TwoEllipses size="15" />
-                  <span v-if="shouldShowButtonText" class="ml-1">推理</span>
-                </div>
+                  <TwoEllipses size="18" class="transition-transform duration-300 group-hover:scale-110" />
+                  <!-- 激活状态指示器 -->
+                  <div v-if="usingDeepThinking" class="absolute -top-1 -right-1 w-3 h-3 bg-purple-500 rounded-full animate-pulse shadow-md"></div>
+                  <!-- 悬停光晕 -->
+                  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <!-- 波纹效果 -->
+                  <div class="absolute inset-0 rounded-xl bg-purple-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+                </button>
                 <div v-if="!isMobile" class="tooltip tooltip-top">
                   AI 推理能力，帮助寻找更深层次的答案
                 </div>
               </div>
 
+              <!-- 网络搜索按钮 -->
               <div v-if="shouldShowNetworkSearch" class="group relative">
-                <div
-                  class="btn-pill btn-md mx-1"
-                  :class="[usingNetwork ? 'btn-pill-active' : '']"
+                <button
+                  type="button"
+                  class="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg overflow-hidden"
+                  :class="[
+                    usingNetwork
+                      ? 'bg-gradient-to-r from-blue-500/30 to-cyan-500/30 border-blue-300/60 dark:border-blue-600/60 text-blue-600 dark:text-blue-400 shadow-md'
+                      : 'bg-white/70 dark:bg-gray-700/70 border-gray-200/50 dark:border-gray-600/50 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-600'
+                  ]"
                   @click="usingNetwork = !usingNetwork"
                   role="button"
                   :aria-pressed="usingNetwork"
                   aria-label="启用或禁用网络搜索"
                   tabindex="0"
                 >
-                  <Sphere size="15" />
-                  <span v-if="shouldShowButtonText" class="ml-1">搜索</span>
-                </div>
+                  <Sphere size="18" class="transition-transform duration-300 group-hover:rotate-180" />
+                  <!-- 激活状态指示器 -->
+                  <div v-if="usingNetwork" class="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse shadow-md"></div>
+                  <!-- 悬停光晕 -->
+                  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <!-- 波纹效果 -->
+                  <div class="absolute inset-0 rounded-xl bg-blue-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+                </button>
                 <div v-if="!isMobile" class="tooltip tooltip-top">启用网络搜索，获取最新信息</div>
               </div>
 
+              <!-- 图表工具按钮 -->
               <div v-if="shouldShowMermaidTool" class="group relative">
-                <div
-                  class="btn-pill btn-md mx-1"
-                  :class="[usingMermaid ? 'btn-pill-active' : '']"
+                <button
+                  type="button"
+                  class="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg overflow-hidden"
+                  :class="[
+                    usingMermaid
+                      ? 'bg-gradient-to-r from-green-500/30 to-emerald-500/30 border-green-300/60 dark:border-green-600/60 text-green-600 dark:text-green-400 shadow-md'
+                      : 'bg-white/70 dark:bg-gray-700/70 border-gray-200/50 dark:border-gray-600/50 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-600'
+                  ]"
                   @click="usingMermaid = !usingMermaid"
                   role="button"
                   :aria-pressed="usingMermaid"
                   aria-label="启用或禁用流程图功能"
                   tabindex="0"
                 >
-                  <TreeDiagram size="15" />
-                  <span v-if="shouldShowButtonText" class="ml-1">图表</span>
-                </div>
+                  <TreeDiagram size="18" class="transition-transform duration-300 group-hover:rotate-90" />
+                  <!-- 激活状态指示器 -->
+                  <div v-if="usingMermaid" class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-md"></div>
+                  <!-- 悬停光晕 -->
+                  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <!-- 波纹效果 -->
+                  <div class="absolute inset-0 rounded-xl bg-green-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+                </button>
                 <div v-if="!isMobile" class="tooltip tooltip-top">
                   启用图表功能，支持Mermaid图表绘制
                 </div>
               </div>
             </div>
 
-            <div class="flex justify-end items-center mr-1">
-              <!-- 当不在加载状态时显示这个按钮，用于提交 -->
+            <!-- 右侧发送/停止按钮区域 -->
+            <div class="flex justify-end items-center">
+              <!-- 发送按钮 -->
               <div v-if="!isStreamIn" class="group relative">
                 <button
                   type="button"
-                  class="btn-send"
-                  :class="{ 'opacity-60 cursor-not-allowed': buttonDisabled, 'h-8 w-8': isMobile }"
+                  class="relative w-10 h-10 rounded-2xl bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 overflow-hidden"
+                  :class="{ 'w-8 h-8': isMobile }"
                   :disabled="buttonDisabled"
                   @click="handleSubmit()"
                   aria-label="发送消息"
                 >
-                  <SendOne size="15" />
+                  <SendOne size="18" :class="{ 'text-sm': isMobile }" class="transition-transform duration-300 group-hover:scale-110 relative z-10" />
+                  <!-- 按钮光晕 -->
+                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <!-- 按钮波纹效果 -->
+                  <div class="absolute inset-0 rounded-2xl border border-white/30"></div>
+                  <!-- 动态光环 -->
+                  <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
                 </button>
-                <div v-if="!isMobile" class="tooltip tooltip-top">发送</div>
+                <div v-if="!isMobile" class="tooltip tooltip-top">发送消息</div>
               </div>
 
-              <!-- 当在加载状态时显示这个按钮，用于停止 -->
+              <!-- 停止按钮 -->
               <div v-if="isStreamIn" class="group relative">
                 <button
                   type="button"
-                  class="btn-stop"
-                  :class="{ 'h-8 w-8': isMobile }"
+                  class="relative w-10 h-10 rounded-2xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden"
+                  :class="{ 'w-8 h-8': isMobile }"
                   @click="handleStop()"
                   aria-label="停止生成"
                 >
-                  <Square size="16" />
+                  <Square size="18" :class="{ 'text-sm': isMobile }" class="transition-transform duration-300 group-hover:rotate-90 relative z-10" />
+                  <!-- 按钮光晕 -->
+                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <!-- 按钮波纹效果 -->
+                  <div class="absolute inset-0 rounded-2xl border border-white/30"></div>
+                  <!-- 停止动画指示器 -->
+                  <div class="absolute inset-0 rounded-2xl border-2 border-white/30 animate-ping"></div>
+                  <!-- 动态光环 -->
+                  <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-red-500/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
                 </button>
                 <div v-if="!isMobile" class="tooltip tooltip-top">停止生成</div>
               </div>

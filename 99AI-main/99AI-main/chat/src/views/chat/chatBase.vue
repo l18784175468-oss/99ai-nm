@@ -1294,6 +1294,10 @@ provide('tryParseJson', tryParseJson)
     <!-- Main container flex -->
     <div
       class="relative overflow-hidden h-full w-full flex flex-col transition-all duration-300 ease-in-out transform"
+      :class="[
+        isMobile ? 'mobile-optimized' : 'desktop-optimized',
+        'responsive-container'
+      ]"
     >
       <!-- Background Image Layer -->
       <div
@@ -1336,13 +1340,13 @@ provide('tryParseJson', tryParseJson)
           <div
             id="scrollRef"
             ref="scrollRef"
-            class="relative h-full overflow-y-auto scroll-smooth custom-scrollbar"
+            class="relative h-full overflow-y-auto scroll-smooth custom-scrollbar responsive-scrollbar"
             style="background-color: transparent; position: relative; z-index: 5"
             @scroll="handleScroll"
           >
             <div
               id="image-wrapper"
-              class="w-full m-auto h-full mx-auto pb-10"
+              class="w-full m-auto h-full mx-auto pb-10 responsive-content-wrapper"
               :class="[isMobile ? 'p-3' : 'p-3 w-full max-w-4xl']"
             >
               <!-- Welcome/Tips/Messages - These inherit the transparent background -->
@@ -1428,7 +1432,7 @@ provide('tryParseJson', tryParseJson)
         <!-- Footer - 调整垂直居中位置 -->
         <div
           :class="[
-            'z-20',
+            'z-20 responsive-footer',
             !dataSources.length && !isMobile
               ? 'absolute left-0 right-0 top-1/2 transform -translate-y-1/2'
               : 'relative',
@@ -1461,10 +1465,10 @@ provide('tryParseJson', tryParseJson)
         <!-- 底部Copyright Area -->
         <div
           v-if="!isMobile && !dataSources.length"
-          class="fixed z-50 h-8 flex items-center justify-center bottom-0 left-0 w-full backdrop-blur-sm"
+          class="fixed z-50 h-8 flex items-center justify-center bottom-0 left-0 w-full backdrop-blur-sm responsive-copyright"
         >
           <div
-            class="text-sm text-gray-600 dark:text-gray-400 max-h-6 flex justify-center items-center"
+            class="text-sm text-gray-600 dark:text-gray-400 max-h-6 flex justify-center items-center responsive-copyright-text"
           >
             AI 生成内容仅供参考，不代表本平台立场。
             <span v-if="globalConfig?.companyName">
@@ -1681,5 +1685,327 @@ provide('tryParseJson', tryParseJson)
 .modal-fade-enter-from,
 .modal-fade-leave-to {
   opacity: 0;
+}
+
+/* 响应式布局优化 */
+.mobile-optimized {
+  /* 移动端优化样式 */
+  touch-action: pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-optimized .welcome-component {
+  /* 移动端欢迎组件优化 */
+  padding: 1rem;
+}
+
+.mobile-optimized .preset-hints {
+  /* 移动端预设提示优化 */
+  padding: 0.5rem;
+}
+
+.mobile-optimized .preset-hints .hint-card {
+  /* 移动端提示卡片优化 */
+  min-height: auto;
+  padding: 0.75rem;
+}
+
+.mobile-optimized .footer-component {
+  /* 移动端底部组件优化 */
+  padding: 0.75rem;
+}
+
+.mobile-optimized .header-component {
+  /* 移动端头部组件优化 */
+  padding: 0.5rem 1rem;
+}
+
+.desktop-optimized {
+  /* 桌面端优化样式 */
+}
+
+/* 响应式容器 */
+.responsive-container {
+  container-type: inline-size;
+}
+
+.responsive-content-wrapper {
+  container-type: inline-size;
+}
+
+/* 响应式滚动条 */
+.responsive-scrollbar {
+  /* 在小屏幕上隐藏滚动条 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.responsive-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* 在大屏幕上显示滚动条 */
+@container (min-width: 768px) {
+  .responsive-scrollbar {
+    scrollbar-width: thin;
+    -ms-overflow-style: auto;
+  }
+  
+  .responsive-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .responsive-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .responsive-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 3px;
+  }
+  
+  .responsive-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(156, 163, 175, 0.7);
+  }
+}
+
+/* 响应式底部区域 */
+.responsive-footer {
+  container-type: inline-size;
+}
+
+/* 响应式版权信息 */
+.responsive-copyright {
+  container-type: inline-size;
+  padding: 0 1rem;
+}
+
+.responsive-copyright-text {
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  line-height: 1.5;
+}
+
+@container (max-width: 480px) {
+  .responsive-copyright-text {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.25rem;
+  }
+  
+  .responsive-copyright-text span {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* 暗色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .glass-effect {
+    background-color: rgba(17, 24, 39, 0.7) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .glass-card {
+    background: rgba(31, 41, 55, 0.5) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(75, 85, 99, 0.2);
+  }
+  
+  .gradient-bg {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, #90cdf4 0%, #63b3ed 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5) !important;
+  }
+}
+
+/* 响应式断点调整 */
+@media (max-width: 640px) {
+  .mobile-optimized .preset-hints .hint-card {
+    margin: 0.25rem;
+    min-height: 60px;
+  }
+  
+  .mobile-optimized .welcome-component .welcome-title {
+    font-size: 1.5rem;
+  }
+  
+  .mobile-optimized .footer-component .input-container {
+    padding: 0.5rem;
+  }
+  
+  .responsive-container {
+    padding: 0;
+  }
+  
+  .responsive-content-wrapper {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-optimized .preset-hints .hint-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.5rem;
+  }
+}
+
+/* 容器查询支持 */
+@container (max-width: 480px) {
+  .responsive-container {
+    padding: 0;
+  }
+  
+  .responsive-content-wrapper {
+    padding: 0.5rem;
+  }
+  
+  .responsive-footer {
+    padding: 0.5rem;
+  }
+}
+
+@container (min-width: 1024px) {
+  .responsive-content-wrapper {
+    max-width: 1024px;
+    margin: 0 auto;
+  }
+}
+
+@container (min-width: 1280px) {
+  .responsive-content-wrapper {
+    max-width: 1200px;
+  }
+}
+
+@container (min-width: 1536px) {
+  .responsive-content-wrapper {
+    max-width: 1400px;
+  }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  .hover-scale:hover {
+    transform: none;
+  }
+  
+  .hover-glow:hover {
+    box-shadow: none;
+  }
+  
+  .preset-hints .hint-card {
+    transition: none;
+  }
+  
+  /* 增大触摸目标 */
+  .preset-hints .hint-card {
+    min-height: 60px;
+    padding: 1rem;
+  }
+  
+  .footer-component .send-button {
+    min-width: 48px;
+    min-height: 48px;
+  }
+  
+  /* 触摸设备滚动优化 */
+  .responsive-scrollbar {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* 触摸反馈优化 */
+  .interactive {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* 高分辨率屏幕优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .responsive-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .responsive-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+  }
+}
+
+/* 超宽屏幕优化 */
+@media (min-width: 1920px) {
+  .responsive-content-wrapper {
+    max-width: 1600px;
+  }
+  
+  .responsive-container {
+    padding: 0 2rem;
+  }
+}
+
+/* 小屏幕设备优化 */
+@media (max-width: 360px) {
+  .mobile-optimized .preset-hints .hint-card {
+    min-height: 50px;
+    padding: 0.5rem;
+  }
+  
+  .mobile-optimized .footer-component {
+    padding: 0.5rem;
+  }
+  
+  .responsive-copyright {
+    padding: 0 0.5rem;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .glass-effect {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .glass-card {
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .gradient-text {
+    color: white !important;
+    background: none !important;
+  }
+}
+
+/* 减少动画偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+  .welcome-component .floating-element,
+  .preset-hints .hint-card,
+  .footer-component .send-button {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .welcome-component,
+  .preset-hints,
+  .footer-component,
+  .header-component {
+    display: none !important;
+  }
 }
 </style>
