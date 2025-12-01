@@ -2,7 +2,6 @@ services:
   mysql:
     image: mysql:8
     command: --mysql-native-password=ON --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    # command: --default-authentication-plugin=caching_sha2_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     restart: always
     volumes:
       - ./data/mysql/:/var/lib/mysql/
@@ -15,10 +14,13 @@ services:
       MYSQL_DATABASE: 'chatgpt'
       MYSQL_USER: 'chatgpt'
       MYSQL_PASSWORD: '123456'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   redis:
-    image: redis
-    # command: --requirepass "12345678" # redis库密码,不需要密码注释本行
+    image: redis:7-alpine
     restart: always
     # ports:
     #   - "6379:6379"
@@ -26,6 +28,10 @@ services:
       TZ: Asia/Shanghai # 指定时区
     volumes:
       - ./data/redis/:/data/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 3s
+      retries: 5
 
   99ai:
     build:
@@ -43,12 +49,20 @@ services:
       - ./package.json:/usr/src/app/package.json:ro # 挂载package.json（只读）
       - ./pm2.conf.json:/usr/src/app/pm2.conf.json:ro # 挂载pm2.conf.json（只读）
       - myapp_data:/app/data # Mount the named volume for persistent instance ID
+      - ./logs:/usr/src/app/logs:rw # 挂载日志目录（读写）
     environment:
       - TZ=Asia/Shanghai
-    # depends_on can often be removed if the app handles connection retries
-    # depends_on:
-    #   - mysql
-    #   - redis
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9520/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
   myapp_data: # Define the named volume

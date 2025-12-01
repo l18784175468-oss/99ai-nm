@@ -1,0 +1,37 @@
+# 使用更稳定的Node.js版本而不是latest
+FROM node:18-alpine
+
+# 设置时区为上海
+ENV TZ="Asia/Shanghai"
+
+# 安装必要的系统依赖
+RUN apk add --no-cache curl
+
+# 设置工作目录
+WORKDIR /usr/src/app
+
+# 安装pnpm
+RUN npm install -g npm pm2 pnpm
+
+# 复制package.json以利用Docker缓存机制
+COPY package.json ./
+COPY pnpm-lock.yaml* ./
+
+# 安装依赖
+RUN pnpm install --frozen-lockfile
+
+# 复制应用代码
+COPY . .
+
+# 创建日志目录
+RUN mkdir -p logs
+
+# 暴露应用端口
+EXPOSE 9520
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:9520/health || exit 1
+
+# 启动应用
+CMD ["pm2-runtime", "start", "pm2.conf.json"]
