@@ -3,6 +3,7 @@ import { fetchQueryOneCatAPI } from '@/api/appStore'
 import { fetchUpdateGroupAPI } from '@/api/group'
 import { fetchQueryModelsListAPI } from '@/api/models'
 import { DropdownMenu } from '@/components/common/DropdownMenu'
+import ToolLinks from '@/views/chat/components/ToolLinks/index.vue'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useAppStore, useChatStore, useGlobalStoreWithOut } from '@/store'
 import {
@@ -97,7 +98,7 @@ let modelTypeListCache: any = ref([])
 
 watch(
   activeAppId,
-  val => {
+  (val: number) => {
     if (val) queryAppDetail(val)
     else appDetail.value = null
   },
@@ -235,31 +236,42 @@ function openSettings(tab?: number) {
 </script>
 
 <template>
-  <header class="sticky top-0 left-0 right-0 z-30 h-16 select-none group">
+  <header class="sticky top-0 left-0 right-0 z-30 h-16 select-none group header-component">
     <!-- 多层背景装饰 -->
-    <div class="absolute inset-0 bg-gradient-to-r from-white/90 via-white/80 to-white/90 dark:from-gray-900/90 dark:via-gray-900/80 dark:to-gray-900/90 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 transition-all duration-300"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/90 to-white/95 dark:from-gray-900/95 dark:via-gray-900/90 dark:to-gray-900/95 backdrop-blur-xl border-b border-gray-200/60 dark:border-gray-700/60 transition-all duration-300"></div>
     
     <!-- 动态光效 -->
-    <div class="absolute inset-0 bg-gradient-to-r from-primary-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-primary-500/8 via-transparent to-purple-500/8 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+    
+    <!-- 顶部装饰线 -->
+    <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    
+    <!-- 动态粒子背景 -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute w-96 h-96 -top-48 -left-48 bg-primary-400/5 rounded-full blur-3xl animate-pulse"></div>
+      <div class="absolute w-96 h-96 -top-48 -right-48 bg-purple-400/5 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+    </div>
     
     <div class="relative flex items-center justify-center min-w-0 h-full">
       <div class="flex w-full h-full items-center" :class="{ 'px-4': !isMobile, 'px-2': isMobile }">
         <!-- 侧边栏展开按钮 -->
         <div
           v-if="collapsed && !externalLinkActive && !isPreviewerVisible"
-          class="relative group mx-1"
+          class="relative group mx-2"
         >
           <button
             type="button"
-            class="relative w-10 h-10 rounded-xl bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg group overflow-hidden"
+            class="relative w-11 h-11 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-600/60 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all duration-500 hover:scale-110 shadow-md hover:shadow-xl group overflow-hidden"
             @click="handleUpdateCollapsed"
             aria-label="展开侧边栏"
           >
-            <ExpandLeft size="20" class="text-gray-600 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-all duration-300 relative z-10" />
+            <ExpandLeft size="22" class="text-gray-600 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-all duration-500 relative z-10" />
             <!-- 按钮光晕 -->
-            <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/15 to-purple-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <!-- 波纹效果 -->
-            <div class="absolute inset-0 rounded-xl bg-primary-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+            <div class="absolute inset-0 rounded-2xl bg-primary-500/25 scale-0 group-active:scale-100 transition-transform duration-500"></div>
+            <!-- 装饰环 -->
+            <div class="absolute -inset-1 rounded-2xl border-2 border-primary-300/40 dark:border-primary-600/40 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
           </button>
           <!-- 悬停提示 -->
           <div v-if="!isMobile" class="tooltip tooltip-right">展开侧栏</div>
@@ -272,24 +284,24 @@ function openSettings(tab?: number) {
             v-if="externalLinkActive"
             class="relative flex-1 flex ele-drag items-center justify-between h-full"
           >
-            <div class="py-2 flex items-center space-x-3 group">
-              <div class="relative transform transition-transform duration-300 group-hover:scale-110">
+            <div class="py-3 flex items-center space-x-4 group">
+              <div class="relative transform transition-all duration-500 group-hover:scale-115 group-hover:rotate-6">
                 <img
                   v-if="currentExternalLink && currentExternalLink.icon"
                   :src="currentExternalLink.icon"
                   alt="网站图标"
-                  class="w-8 h-8 rounded-xl object-cover shadow-md group-hover:shadow-xl transition-shadow duration-300"
+                  class="w-10 h-10 rounded-2xl object-cover shadow-lg group-hover:shadow-2xl transition-all duration-500"
                 />
-                <div v-else class="w-8 h-8 rounded-xl bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center shadow-md group-hover:shadow-xl transition-all duration-300">
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-100 transition-colors duration-300">{{ currentExternalLink?.name?.charAt(0) || '?' }}</span>
+                <div v-else class="w-10 h-10 rounded-2xl bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center shadow-lg group-hover:shadow-2xl transition-all duration-500">
+                  <span class="text-base font-bold text-gray-600 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-100 transition-colors duration-500">{{ currentExternalLink?.name?.charAt(0) || '?' }}</span>
                 </div>
                 <!-- 装饰环 -->
-                <div class="absolute -inset-1 rounded-xl border-2 border-primary-300/30 dark:border-primary-600/30 animate-pulse"></div>
+                <div class="absolute -inset-1 rounded-2xl border-2 border-primary-300/40 dark:border-primary-600/40 animate-pulse"></div>
                 <!-- 悬停光晕 -->
-                <div class="absolute -inset-2 rounded-xl bg-primary-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
+                <div class="absolute -inset-2 rounded-2xl bg-primary-500/15 opacity-0 group-hover:opacity-100 transition-all duration-500 blur-lg"></div>
               </div>
               <span
-                class="text-base font-medium text-gray-800 dark:text-gray-200 truncate whitespace-nowrap overflow-hidden max-w-[30vw] transition-colors duration-300 group-hover:text-primary-600 dark:group-hover:text-primary-400"
+                class="text-lg font-semibold text-gray-800 dark:text-gray-200 truncate whitespace-nowrap overflow-hidden max-w-[30vw] transition-all duration-500 group-hover:text-primary-600 dark:group-hover:text-primary-400"
               >
                 {{ currentExternalLink?.name || '外部链接' }}
               </span>
@@ -299,70 +311,71 @@ function openSettings(tab?: number) {
           <!-- 不可切换模型状态 -->
           <div v-else-if="notSwitchModel" class="flex-1 flex items-center">
             <div class="relative group">
-              <div class="menu menu-md relative">
-                <button class="relative menu-trigger bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 rounded-xl px-4 py-2 flex items-center space-x-3 hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 shadow-sm hover:shadow-md" aria-label="当前对话" disabled>
-                  <div class="avatar avatar-md relative">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300">
-                      <span class="text-white font-bold text-sm">{{ (activeGroupInfo?.title || '新对话').charAt(0) }}</span>
+              <div class="menu menu-lg relative">
+                <button class="relative menu-trigger bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-600/60 rounded-2xl px-5 py-3 flex items-center space-x-4 hover:bg-white dark:hover:bg-gray-700 transition-all duration-500 shadow-md hover:shadow-xl" aria-label="当前对话" disabled>
+                  <div class="avatar avatar-lg relative">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-md group-hover:shadow-xl transition-all duration-500">
+                      <span class="text-white font-bold text-base">{{ (activeGroupInfo?.title || '新对话').charAt(0) }}</span>
                     </div>
                     <!-- 头像光晕 -->
-                    <div class="absolute inset-0 rounded-xl bg-primary-400/20 scale-0 group-hover:scale-100 transition-transform duration-300 blur-md"></div>
+                    <div class="absolute inset-0 rounded-2xl bg-primary-400/25 scale-0 group-hover:scale-110 transition-transform duration-500 blur-lg"></div>
+                    <!-- 状态指示器 -->
+                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-md"></div>
                   </div>
-                  <span class="truncate whitespace-nowrap overflow-hidden max-w-[30vw] font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
+                  <span class="truncate whitespace-nowrap overflow-hidden max-w-[30vw] font-semibold text-gray-700 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-500">
                     {{ activeGroupInfo?.title || '新对话' }}
                   </span>
-                  <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-sm"></div>
                 </button>
               </div>
               <!-- 背景光晕 -->
-              <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/8 to-purple-500/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </div>
           </div>
 
           <!-- 模型选择下拉菜单 -->
           <div v-else class="flex-1 flex items-center">
-            <DropdownMenu v-model="isMenuOpen" position="bottom-left" max-height="50vh">
+            <DropdownMenu v-model="isMenuOpen" position="bottom-left" max-height="60vh">
               <template #trigger>
                 <button
-                  class="relative group menu-trigger bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 rounded-xl px-4 py-2 flex items-center space-x-3 hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 hover:scale-[1.02] hover:shadow-md overflow-hidden"
+                  class="relative group menu-trigger bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-600/60 rounded-2xl px-5 py-3 flex items-center space-x-4 hover:bg-white dark:hover:bg-gray-700 transition-all duration-500 hover:scale-[1.03] hover:shadow-xl overflow-hidden"
                   @mouseover="isHovering = true"
                   @mouseleave="isHovering = false"
                   aria-label="选择模型"
                 >
-                  <div class="avatar avatar-md relative">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300">
-                      <span class="text-white font-bold text-sm">{{ (configObj?.modelInfo?.modelName || '新对话').charAt(0) }}</span>
+                  <div class="avatar avatar-lg relative">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-md group-hover:shadow-xl transition-all duration-500">
+                      <span class="text-white font-bold text-base">{{ (configObj?.modelInfo?.modelName || '新对话').charAt(0) }}</span>
                     </div>
                     <!-- 头像光晕 -->
-                    <div class="absolute inset-0 rounded-xl bg-primary-400/20 scale-0 group-hover:scale-100 transition-transform duration-300 blur-md"></div>
+                    <div class="absolute inset-0 rounded-2xl bg-primary-400/25 scale-0 group-hover:scale-110 transition-transform duration-500 blur-lg"></div>
                   </div>
-                  <span class="truncate whitespace-nowrap overflow-hidden max-w-[40vw] font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
+                  <span class="truncate whitespace-nowrap overflow-hidden max-w-[40vw] font-semibold text-gray-700 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-500">
                     {{ configObj?.modelInfo?.modelName || '新对话' }}
                   </span>
                   <Right
                     v-if="isHovering || isMobile || isMenuOpen"
-                    size="18"
-                    class="text-gray-500 dark:text-gray-400 transition-all duration-300"
+                    size="20"
+                    class="text-gray-500 dark:text-gray-400 transition-all duration-500"
                     :class="{
                       'rotate-90': isMenuOpen,
                     }"
                     aria-hidden="true"
                   />
                   <!-- 背景光晕 -->
-                  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/15 to-purple-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <!-- 波纹效果 -->
-                  <div class="absolute inset-0 rounded-xl bg-primary-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-primary-500/25 scale-0 group-active:scale-100 transition-transform duration-500"></div>
                 </button>
               </template>
               <template #menu="{ close }">
-                <div class="p-2 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+                <div class="p-3 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/60 dark:border-gray-700/60 overflow-hidden">
                   <!-- 菜单顶部装饰线 -->
-                  <div class="h-0.5 w-full bg-gradient-to-r from-primary-500 via-purple-500 to-primary-500 mb-2 rounded-full"></div>
-                  <div class="max-h-60 overflow-y-auto custom-scrollbar">
+                  <div class="h-1 w-full bg-gradient-to-r from-primary-500 via-purple-500 to-primary-500 mb-3 rounded-full"></div>
+                  <div class="max-h-64 overflow-y-auto custom-scrollbar">
                     <div
                       v-for="(option, index) in modelOptions"
                       :key="index"
-                      class="menu-item menu-item-md group relative overflow-hidden"
+                      class="menu-item menu-item-lg group relative overflow-hidden"
                       :class="{ 'menu-item-active': activeModel === option.value }"
                       @click="
                         () => {
@@ -374,30 +387,30 @@ function openSettings(tab?: number) {
                       tabindex="0"
                       :aria-label="`选择${option.label}模型`"
                     >
-                      <div class="avatar avatar-md relative">
+                      <div class="avatar avatar-lg relative">
                         <img
                           v-if="option.modelAvatar"
                           :src="option.modelAvatar"
                           :alt="`${option.label}模型图标`"
-                          class="w-full h-full object-cover rounded-xl"
+                          class="w-full h-full object-cover rounded-2xl"
                         />
-                        <div v-else class="w-full h-full rounded-xl bg-gradient-to-br from-primary-400 to-purple-600 flex items-center justify-center">
-                          <span class="text-white font-bold text-sm">{{ option.label.charAt(0) }}</span>
+                        <div v-else class="w-full h-full rounded-2xl bg-gradient-to-br from-primary-400 to-purple-600 flex items-center justify-center">
+                          <span class="text-white font-bold text-base">{{ option.label.charAt(0) }}</span>
                         </div>
                         <!-- 选中状态指示器 -->
-                        <div v-if="activeModel === option.value" class="absolute -top-1 -right-1 w-4 h-4 bg-primary-500 rounded-full flex items-center justify-center shadow-md animate-pulse">
+                        <div v-if="activeModel === option.value" class="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center shadow-lg animate-pulse">
                           <CheckOne
                             theme="filled"
-                            size="12"
+                            size="14"
                             class="text-white"
                             aria-hidden="true"
                           />
                         </div>
                         <!-- 悬停光晕 -->
-                        <div class="absolute inset-0 rounded-xl bg-primary-400/20 scale-0 group-hover:scale-100 transition-transform duration-300 blur-md"></div>
+                        <div class="absolute inset-0 rounded-2xl bg-primary-400/25 scale-0 group-hover:scale-110 transition-transform duration-500 blur-lg"></div>
                       </div>
                       <div class="menu-item-content">
-                        <div class="menu-item-title font-medium">
+                        <div class="menu-item-title font-semibold">
                           {{ option.label }}
                         </div>
                         <div v-if="option.modelDescription" class="menu-item-description text-sm">
@@ -405,7 +418,7 @@ function openSettings(tab?: number) {
                         </div>
                       </div>
                       <!-- 悬停效果 -->
-                      <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/8 to-purple-500/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </div>
                   </div>
                 </div>
@@ -414,23 +427,25 @@ function openSettings(tab?: number) {
           </div>
 
           <!-- 右侧功能按钮区域 -->
-          <div class="flex items-center space-x-1">
+          <div class="flex items-center space-x-2">
             <!-- 主题切换按钮 -->
             <div v-if="!externalLinkActive && !isPreviewerVisible" class="relative group">
               <button
                 type="button"
-                class="relative w-10 h-10 rounded-xl bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg group overflow-hidden"
+                class="relative w-11 h-11 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-600/60 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all duration-500 hover:scale-110 shadow-md hover:shadow-xl group overflow-hidden"
                 @click="checkMode()"
                 aria-label="切换主题"
               >
-                <Brightness v-if="!darkMode" size="18" class="text-gray-600 dark:text-gray-400 group-hover:text-yellow-500 dark:group-hover:text-yellow-400 transition-all duration-300 relative z-10" />
-                <DarkMode v-else size="18" class="text-gray-600 dark:text-gray-400 group-hover:text-blue-500 transition-all duration-300 relative z-10" />
+                <Brightness v-if="!darkMode" size="20" class="text-gray-600 dark:text-gray-400 group-hover:text-yellow-500 dark:group-hover:text-yellow-400 transition-all duration-500 relative z-10" />
+                <DarkMode v-else size="20" class="text-gray-600 dark:text-gray-400 group-hover:text-blue-500 transition-all duration-500 relative z-10" />
                 <!-- 背景光晕 -->
-                <div class="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                     :class="darkMode ? 'bg-gradient-to-r from-blue-500/10 to-blue-600/10' : 'bg-gradient-to-r from-yellow-500/10 to-orange-500/10'"></div>
+                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500"
+                     :class="darkMode ? 'bg-gradient-to-r from-blue-500/15 to-blue-600/15' : 'bg-gradient-to-r from-yellow-500/15 to-orange-500/15'"></div>
                 <!-- 波纹效果 -->
-                <div class="absolute inset-0 rounded-xl scale-0 group-active:scale-100 transition-transform duration-300"
-                     :class="darkMode ? 'bg-blue-500/20' : 'bg-yellow-500/20'"></div>
+                <div class="absolute inset-0 rounded-2xl scale-0 group-active:scale-100 transition-transform duration-500"
+                     :class="darkMode ? 'bg-blue-500/25' : 'bg-yellow-500/25'"></div>
+                <!-- 装饰环 -->
+                <div class="absolute -inset-1 rounded-2xl border-2 border-gray-300/40 dark:border-gray-600/40 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
               </button>
               <!-- 悬停提示 -->
               <div v-if="!isMobile" class="tooltip tooltip-bottom">切换主题</div>
@@ -443,7 +458,7 @@ function openSettings(tab?: number) {
             <div v-if="externalLinkActive" class="relative group">
               <button
                 type="button"
-                class="relative w-10 h-10 rounded-xl bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg group overflow-hidden"
+                class="relative w-11 h-11 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-600/60 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all duration-500 hover:scale-110 shadow-md hover:shadow-xl group overflow-hidden"
                 @click="
                   () => {
                     useGlobalStore.updateExternalLinkDialog(false)
@@ -454,42 +469,48 @@ function openSettings(tab?: number) {
                 "
                 aria-label="关闭外部链接"
               >
-                <Close size="18" class="text-gray-600 dark:text-gray-400 group-hover:text-red-500 transition-all duration-300 relative z-10" />
+                <Close size="20" class="text-gray-600 dark:text-gray-400 group-hover:text-red-500 transition-all duration-500 relative z-10" />
                 <!-- 背景光晕 -->
-                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-red-500/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/15 to-red-600/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <!-- 波纹效果 -->
-                <div class="absolute inset-0 rounded-xl bg-red-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+                <div class="absolute inset-0 rounded-2xl bg-red-500/25 scale-0 group-active:scale-100 transition-transform duration-500"></div>
+                <!-- 装饰环 -->
+                <div class="absolute -inset-1 rounded-2xl border-2 border-red-300/40 dark:border-red-600/40 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
               </button>
               <div v-if="!isMobile" class="tooltip tooltip-bottom">关闭</div>
             </div>
             <div v-else-if="isAppListVisible" class="relative group">
               <button
                 type="button"
-                class="relative w-10 h-10 rounded-xl bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg group overflow-hidden"
+                class="relative w-11 h-11 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-600/60 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all duration-500 hover:scale-110 shadow-md hover:shadow-xl group overflow-hidden"
                 @click="closeAppList"
                 aria-label="关闭应用广场"
               >
-                <Close size="18" class="text-gray-600 dark:text-gray-400 group-hover:text-red-500 transition-all duration-300 relative z-10" />
+                <Close size="20" class="text-gray-600 dark:text-gray-400 group-hover:text-red-500 transition-all duration-500 relative z-10" />
                 <!-- 背景光晕 -->
-                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-red-500/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/15 to-red-600/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <!-- 波纹效果 -->
-                <div class="absolute inset-0 rounded-xl bg-red-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+                <div class="absolute inset-0 rounded-2xl bg-red-500/25 scale-0 group-active:scale-100 transition-transform duration-500"></div>
+                <!-- 装饰环 -->
+                <div class="absolute -inset-1 rounded-2xl border-2 border-red-300/40 dark:border-red-600/40 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
               </button>
               <div v-if="!isMobile" class="tooltip tooltip-bottom">关闭</div>
             </div>
             <div v-else-if="!isPreviewerVisible" class="relative group">
               <button
                 type="button"
-                class="relative w-10 h-10 rounded-xl bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg group overflow-hidden"
+                class="relative w-11 h-11 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-600/60 flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition-all duration-500 hover:scale-110 shadow-md hover:shadow-xl group overflow-hidden"
                 @click="createNewChatGroup()"
                 :disabled="listSources.length === 0 && !activeAppId && dataSources.length !== 0"
                 aria-label="新建对话"
               >
-                <EditTwo size="18" class="text-gray-600 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-all duration-300 relative z-10" />
+                <EditTwo size="20" class="text-gray-600 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-all duration-500 relative z-10" />
                 <!-- 背景光晕 -->
-                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/15 to-purple-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <!-- 波纹效果 -->
-                <div class="absolute inset-0 rounded-xl bg-primary-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+                <div class="absolute inset-0 rounded-2xl bg-primary-500/25 scale-0 group-active:scale-100 transition-transform duration-500"></div>
+                <!-- 装饰环 -->
+                <div class="absolute -inset-1 rounded-2xl border-2 border-primary-300/40 dark:border-primary-600/40 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
               </button>
               <div v-if="!isMobile" class="tooltip tooltip-bottom">新建对话</div>
             </div>
@@ -503,7 +524,7 @@ function openSettings(tab?: number) {
 <style scoped>
 /* 响应式布局优化 */
 .header-component {
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 新增动画效果 */
@@ -517,10 +538,27 @@ function openSettings(tab?: number) {
   50% { opacity: 0.8; transform: scale(1.05); }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
 /* 按钮交互增强 */
 .group button {
   position: relative;
   overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .group button::before {
@@ -530,31 +568,73 @@ function openSettings(tab?: number) {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .group:hover button::before {
   left: 100%;
 }
 
+/* 按钮点击波纹效果 */
+.group button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.group button:active::after {
+  width: 300px;
+  height: 300px;
+}
+
 /* 头像动画增强 */
 .avatar {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: float 3s ease-in-out infinite;
 }
 
 .avatar:hover {
-  transform: scale(1.05) rotate(2deg);
+  transform: scale(1.08) rotate(3deg);
+  filter: brightness(1.1);
 }
 
 /* 菜单项动画 */
 .menu-item {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center;
+  position: relative;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.menu-item:hover::before {
+  opacity: 1;
 }
 
 .menu-item:hover {
-  transform: translateY(-2px) scale(1.02);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item-active {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(139, 92, 246, 0.1));
+  border-color: rgba(79, 70, 229, 0.3);
 }
 
 /* 工具提示增强 */

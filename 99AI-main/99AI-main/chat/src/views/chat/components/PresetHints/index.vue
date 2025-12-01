@@ -100,74 +100,101 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="!isHideDefaultPreset && !isMobile" :class="['w-full flex justify-center items-center', containerPaddingClass.value]">
-    <div :class="['grid w-full max-w-5xl', gridColsClass.value, gapClass.value]">
+  <div v-if="!isHideDefaultPreset && !isMobile" :class="['w-full flex justify-center items-center py-6', containerPaddingClass.value]">
+    <div :class="['grid w-full max-w-6xl', gridColsClass.value, gapClass.value]">
       <div
         v-for="(item, index) in randomItems"
         :key="item.title"
-        class="transform transition-all duration-500"
+        class="transform transition-all duration-700 ease-out"
         :class="[
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
-          loadedItems.has(index) ? 'scale-95' : 'hover:scale-105'
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
+          loadedItems.has(index) ? 'scale-95' : 'hover:scale-105 hover:-translate-y-1'
         ]"
-        :style="{ transitionDelay: `${index * 100}ms` }"
+        :style="{ transitionDelay: `${index * 150}ms` }"
       >
         <button
           @click="handleItemClick(item, index)"
-          :class="['group relative w-full rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/20 preset-hints', cardHeightClass.value]"
+          :class="['group relative w-full rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary-500/30 preset-hints', cardHeightClass.value]"
         >
-          <!-- 背景渐变 -->
-          <div class="absolute inset-0 bg-gradient-to-br opacity-90" :class="getRandomGradient()"></div>
+          <!-- 多层背景效果 -->
+          <div class="absolute inset-0">
+            <!-- 主背景渐变 -->
+            <div class="absolute inset-0 bg-gradient-to-br opacity-95" :class="getRandomGradient()"></div>
+            
+            <!-- 动态渐变层 -->
+            <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            
+            <!-- 纹理层 -->
+            <div class="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/5"></div>
+          </div>
           
           <!-- 玻璃态覆盖层 -->
-          <div class="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+          <div class="absolute inset-0 bg-white/15 backdrop-blur-md"></div>
           
           <!-- 装饰光晕 -->
-          <div :class="['absolute bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500 floating-element', isMobile ? 'top-0 right-0 w-16 h-16 -translate-y-8 translate-x-8' : 'top-0 right-0 w-20 h-20 -translate-y-10 translate-x-10']"></div>
+          <div :class="['absolute bg-gradient-to-r from-white/30 to-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700 floating-element', isMobile ? 'top-0 right-0 w-20 h-20 -translate-y-10 translate-x-10' : 'top-0 right-0 w-24 h-24 -translate-y-12 translate-x-12']"></div>
           
-          <!-- 动态光点 -->
-          <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-white/60 rounded-full glow-effect"></div>
-          <div class="absolute bottom-1/3 right-1/3 w-1.5 h-1.5 bg-white/40 rounded-full glow-effect" style="animation-delay: 0.5s;"></div>
+          <!-- 动态光点群 -->
+          <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-white/70 rounded-full glow-effect"></div>
+          <div class="absolute bottom-1/3 right-1/3 w-1.5 h-1.5 bg-white/50 rounded-full glow-effect" style="animation-delay: 0.5s;"></div>
+          <div class="absolute top-2/3 left-1/3 w-1 h-1 bg-white/40 rounded-full glow-effect" style="animation-delay: 1s;"></div>
+          
+          <!-- 动态粒子背景 -->
+          <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute w-32 h-32 -bottom-16 -left-16 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
+            <div class="absolute w-32 h-32 -top-16 -right-16 bg-white/10 rounded-full blur-2xl animate-pulse" style="animation-delay: 0.5s;"></div>
+          </div>
           
           <!-- 内容区域 -->
-          <div :class="['relative h-full flex items-center justify-between', isMobile ? 'p-3' : 'p-4']">
+          <div :class="['relative h-full flex items-center justify-between z-10', isMobile ? 'p-4' : 'p-5']">
             <!-- 图标区域 -->
             <div class="flex-shrink-0">
-              <div :class="['relative rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 transition-all duration-300 icon-container', isMobile ? 'w-10 h-10' : 'w-12 h-12']">
+              <div :class="['relative rounded-2xl bg-white/25 backdrop-blur-md flex items-center justify-center group-hover:bg-white/35 transition-all duration-500 icon-container shadow-lg group-hover:shadow-xl', isMobile ? 'w-12 h-12' : 'w-14 h-14']">
                 <SvgIcon
                   :icon="item.icon || 'ri:robot-line'"
-                  :class="['text-white', isMobile ? 'text-xl' : 'text-2xl', item.iconColor || getIconColorClass()]"
+                  :class="['text-white transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6', isMobile ? 'text-2xl' : 'text-3xl', item.iconColor || getIconColorClass()]"
                 />
                 <!-- 图标光晕 -->
-                <div class="absolute inset-0 rounded-xl bg-white/30 scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/30 to-transparent scale-0 group-hover:scale-100 transition-transform duration-500"></div>
+                <!-- 图标装饰环 -->
+                <div class="absolute -inset-1 rounded-2xl border-2 border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
               </div>
             </div>
             
             <!-- 文字区域 -->
-            <div :class="['flex-grow min-w-0 text-left text-content', isMobile ? 'ml-2' : 'ml-3']">
-              <h3 :class="['text-white font-semibold leading-tight truncate group-hover:text-white/95 transition-colors duration-200', isMobile ? 'text-xs' : 'text-sm']">
+            <div :class="['flex-grow min-w-0 text-left text-content', isMobile ? 'ml-3' : 'ml-4']">
+              <h3 :class="['text-white font-bold leading-tight truncate group-hover:text-white/95 transition-all duration-300', isMobile ? 'text-sm' : 'text-base']">
                 {{ item.title }}
               </h3>
-              <div class="mt-1 h-0.5 w-full bg-white/30 rounded-full overflow-hidden">
-                <div class="h-full bg-white/60 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+              <!-- 装饰线 -->
+              <div class="mt-2 h-0.5 w-full bg-white/30 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-white/60 to-white/40 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
               </div>
+              <!-- 副标题（如果有的话） -->
+              <p v-if="item.description" :class="['text-white/70 text-xs mt-1 truncate group-hover:text-white/80 transition-colors duration-300']">
+                {{ item.description }}
+              </p>
             </div>
             
             <!-- 悬停指示器 -->
-            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 indicator">
-              <div :class="['bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center', isMobile ? 'w-5 h-5' : 'w-6 h-6']">
-                <svg :class="['text-white', isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-500 indicator group-hover:scale-110 group-hover:rotate-12">
+              <div :class="['bg-gradient-to-r from-white/40 to-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg', isMobile ? 'w-6 h-6' : 'w-7 h-7']">
+                <svg :class="['text-white transition-transform duration-300 group-hover:translate-x-0.5', isMobile ? 'w-3 h-3' : 'w-3.5 h-3.5']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                 </svg>
               </div>
             </div>
           </div>
           
-          <!-- 边框光效 -->
-          <div class="absolute inset-0 rounded-2xl border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <!-- 多层边框光效 -->
+          <div class="absolute inset-0 rounded-3xl border border-white/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="absolute inset-0 rounded-3xl border border-white/20 opacity-0 group-hover:opacity-60 transition-opacity duration-700" style="animation-delay: 0.1s;"></div>
           
           <!-- 点击波纹效果 -->
-          <div class="absolute inset-0 rounded-2xl bg-white/20 scale-0 group-active:scale-100 transition-transform duration-200"></div>
+          <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-white/25 to-transparent scale-0 group-active:scale-100 transition-transform duration-300"></div>
+          
+          <!-- 顶部装饰线 -->
+          <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-white/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </button>
       </div>
     </div>
@@ -178,9 +205,9 @@ onMounted(() => {
 /* 添加自定义动画 */
 @keyframes float {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  25% { transform: translateY(-5px) rotate(1deg); }
-  50% { transform: translateY(-10px) rotate(0deg); }
-  75% { transform: translateY(-5px) rotate(-1deg); }
+  25% { transform: translateY(-8px) rotate(2deg); }
+  50% { transform: translateY(-15px) rotate(0deg); }
+  75% { transform: translateY(-8px) rotate(-2deg); }
 }
 
 @keyframes shimmer {
@@ -190,12 +217,30 @@ onMounted(() => {
 
 @keyframes glow-pulse {
   0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.05); }
+  50% { opacity: 0.8; transform: scale(1.08); }
 }
 
 @keyframes ripple {
   0% { transform: scale(0); opacity: 1; }
   100% { transform: scale(4); opacity: 0; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.6; }
+  25% { transform: translateY(-5px) translateX(3px); opacity: 0.8; }
+  50% { transform: translateY(-10px) translateX(0px); opacity: 1; }
+  75% { transform: translateY(-5px) translateX(-3px); opacity: 0.8; }
+}
+
+@keyframes border-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); }
 }
 
 /* 预设提示卡片特殊样式 */

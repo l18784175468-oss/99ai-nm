@@ -48,6 +48,21 @@ module.exports = {
       screens: {
         '3xl': '1750px',
         '4xl': '1870px',
+        // 增加更多响应式断点
+        'xs': '475px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+        // 超宽屏支持
+        '5xl': '2048px',
+        '6xl': '2560px',
+        // 移动端特定断点
+        'mobile': {'max': '767px'},
+        'tablet': {'min': '768px', 'max': '1023px'},
+        'desktop': {'min': '1024px'},
+        'large-desktop': {'min': '1440px'},
       },
       keyframes: {
         spin: {
@@ -170,6 +185,53 @@ module.exports = {
           '35%': { transform: 'rotateZ(-4deg)' },
           '40%, 100%': { transform: 'rotateZ(0deg)' },
         },
+        // 移动端优化动画关键帧
+        mobileFadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        mobileSlideUp: {
+          '0%': { opacity: '0', transform: 'translateY(30px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        mobileScaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        mobileBounce: {
+          '0%, 20%, 53%, 80%, 100%': { transform: 'translateY(0)' },
+          '40%, 43%': { transform: 'translateY(-8px)' },
+          '70%': { transform: 'translateY(-4px)' },
+          '90%': { transform: 'translateY(-2px)' },
+        },
+        mobilePulse: {
+          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.8', transform: 'scale(1.02)' },
+        },
+        touchRipple: {
+          '0%': { transform: 'scale(0)', opacity: '1' },
+          '100%': { transform: 'scale(2.5)', opacity: '0' },
+        },
+        mobileGlow: {
+          '0%, 100%': {
+            boxShadow: '0 0 5px rgba(79, 70, 229, 0.3)',
+            transform: 'scale(1)'
+          },
+          '50%': {
+            boxShadow: '0 0 20px rgba(79, 70, 229, 0.6)',
+            transform: 'scale(1.01)'
+          },
+        },
+        mobileShake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-3px)' },
+          '20%, 40%, 60%, 80%': { transform: 'translateX(3px)' },
+        },
+        mobileWiggle: {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '25%': { transform: 'rotate(-8deg)' },
+          '75%': { transform: 'rotate(8deg)' },
+        },
       },
       animation: {
         'spin-slow': 'spin 2s linear infinite',
@@ -190,6 +252,16 @@ module.exports = {
         'shake': 'shake 0.5s ease-in-out',
         'wiggle': 'wiggle 0.5s ease-in-out',
         'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+        // 移动端优化动画
+        'mobile-fade-in': 'mobileFadeIn 0.4s ease-out',
+        'mobile-slide-up': 'mobileSlideUp 0.3s ease-out',
+        'mobile-scale-in': 'mobileScaleIn 0.2s ease-out',
+        'mobile-bounce': 'mobileBounce 0.6s ease-out',
+        'mobile-pulse': 'mobilePulse 1.5s ease-in-out infinite',
+        'touch-ripple': 'touchRipple 0.6s ease-out',
+        'mobile-glow': 'mobileGlow 2s ease-in-out infinite',
+        'mobile-shake': 'mobileShake 0.5s ease-in-out',
+        'mobile-wiggle': 'mobileWiggle 0.5s ease-in-out',
       },
       width: {
         sider: '60px',

@@ -945,3 +945,824 @@ body {
   color: #818cf8;
   border-color: #818cf8;
 }
+
+/* 增强整体动画效果和微交互 */
+
+/* 新增高级动画效果 */
+@keyframes magnetic-pull {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.05) rotate(2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes elastic-bounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.25) translateY(-10px); }
+  40% { transform: scale(0.8) translateY(0); }
+  50% { transform: scale(1.1) translateY(-5px); }
+  60% { transform: scale(0.9) translateY(0); }
+  70% { transform: scale(1.05) translateY(-2px); }
+  80% { transform: scale(0.95) translateY(0); }
+  90% { transform: scale(1.02) translateY(-1px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes wave-distortion {
+  0% { transform: translateX(0) translateY(0) scaleY(1); }
+  25% { transform: translateX(-5px) translateY(-3px) scaleY(0.95); }
+  50% { transform: translateX(5px) translateY(-5px) scaleY(1.05); }
+  75% { transform: translateX(-3px) translateY(-2px) scaleY(0.98); }
+  100% { transform: translateX(0) translateY(0) scaleY(1); }
+}
+
+@keyframes particle-float {
+  0% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100px) translateX(50px) scale(0.5); opacity: 0; }
+}
+
+@keyframes neon-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes liquid-fill {
+  0% { transform: translateY(100%); }
+  100% { transform: translateY(-100%); }
+}
+
+@keyframes morph-shape {
+  0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+}
+
+/* 增强的交互类 */
+.magnetic-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.magnetic-hover:hover {
+  animation: magnetic-pull 0.6s ease-in-out;
+  transform: scale(1.05);
+}
+
+.elastic-button {
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.elastic-button:hover {
+  transform: scale(1.1);
+}
+
+.elastic-button:active {
+  animation: elastic-bounce 0.8s ease-out;
+}
+
+.wave-text {
+  position: relative;
+  display: inline-block;
+}
+
+.wave-text:hover {
+  animation: wave-distortion 0.6s ease-in-out;
+}
+
+.particle-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.particle-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: currentColor;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.particle-container:hover::before {
+  animation: particle-float 1s ease-out;
+}
+
+.neon-text {
+  animation: neon-glow 2s ease-in-out infinite;
+}
+
+.liquid-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.liquid-button:hover::before {
+  left: 100%;
+}
+
+.morphing-shape {
+  animation: morph-shape 8s ease-in-out infinite;
+}
+
+/* 增强的悬停效果 */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.hover-rotate {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-rotate:hover {
+  transform: rotate(5deg) scale(1.05);
+}
+
+.hover-glow {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(79, 70, 229, 0.4);
+}
+
+.hover-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(45deg, transparent, rgba(79, 70, 229, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.hover-glow:hover::before {
+  opacity: 1;
+}
+
+/* 增强的点击效果 */
+.click-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.click-ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.click-ripple:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+.click-bounce {
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.click-bounce:active {
+  transform: scale(0.9);
+}
+
+.click-bounce:not(:active) {
+  transform: scale(1);
+}
+
+/* 增强的加载动画 */
+.loading-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: loading-dot-bounce 1.4s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(1) { animation-delay: 0s; }
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes loading-dot-bounce {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* 增强的焦点效果 */
+.focus-ring {
+  position: relative;
+}
+
+.focus-ring:focus {
+  outline: none;
+}
+
+.focus-ring:focus::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 2px solid currentColor;
+  animation: focus-ring-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes focus-ring-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+/* 增强的过渡效果 */
+.smooth-transition {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bounce-transition {
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.elastic-transition {
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 增强的阴影效果 */
+.shadow-3d {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.24),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.shadow-colored {
+  box-shadow:
+    0 4px 6px rgba(79, 70, 229, 0.15),
+    0 2px 4px rgba(79, 70, 229, 0.1),
+    0 0 0 1px rgba(79, 70, 229, 0.05);
+}
+
+/* 增强的背景效果 */
+.animated-gradient {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+.animated-gradient-slow {
+  background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+  background-size: 400% 400%;
+  animation: gradient-shift 30s ease infinite;
+}
+
+/* 增强的文字效果 */
+.text-gradient-animated {
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c, #667eea);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 3s linear infinite;
+}
+
+.text-shadow-glow {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+}
+
+/* 增强的响应式交互 */
+@media (hover: hover) {
+  .hover-enhanced {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-enhanced:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .motion-enhanced {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .motion-enhanced:hover {
+    animation: hover-float 2s ease-in-out infinite;
+  }
+}
+
+@keyframes hover-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* 移动端优化样式 */
+@media (max-width: 767px) {
+  /* 移动端专用动画关键帧 */
+  @keyframes mobileFadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes mobileSlideUp {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes mobileScaleIn {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  
+  @keyframes mobileBounce {
+    0%, 20%, 53%, 80%, 100% { transform: translateY(0); }
+    40%, 43% { transform: translateY(-8px); }
+    70% { transform: translateY(-4px); }
+    90% { transform: translateY(-2px); }
+  }
+  
+  @keyframes mobilePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.02); }
+  }
+  
+  @keyframes touchRipple {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+  
+  @keyframes mobileGlow {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(79, 70, 229, 0.3);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(79, 70, 229, 0.6);
+      transform: scale(1.01);
+    }
+  }
+  
+  @keyframes mobileShake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+    20%, 40%, 60%, 80% { transform: translateX(3px); }
+  }
+  
+  @keyframes mobileWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+  }
+  
+  /* 移动端触摸优化 */
+  .mobile-touch {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+  
+  /* 移动端按钮优化 */
+  .mobile-btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .mobile-btn:active {
+    transform: scale(0.98);
+  }
+  
+  /* 移动端触摸反馈 */
+  .mobile-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .mobile-ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+  
+  .mobile-ripple:active::after {
+    width: 200px;
+    height: 200px;
+  }
+  
+  /* 移动端卡片优化 */
+  .mobile-card {
+    margin: 8px;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+  
+  .mobile-card:active {
+    transform: scale(0.98);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 移动端输入框优化 */
+  .mobile-input {
+    font-size: 16px; /* 防止iOS缩放 */
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    min-height: 44px;
+  }
+  
+  .mobile-input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+  
+  /* 移动端导航优化 */
+  .mobile-nav {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .dark .mobile-nav {
+    background: rgba(0, 0, 0, 0.95);
+  }
+  
+  /* 移动端滚动优化 */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+  }
+  
+  /* 移动端安全区域适配 */
+  .mobile-safe-area {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* 移动端手势支持 */
+  .mobile-swipe {
+    touch-action: pan-x pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* 移动端动画类 */
+  .mobile-fade-in {
+    animation: mobileFadeIn 0.4s ease-out;
+  }
+  
+  .mobile-slide-up {
+    animation: mobileSlideUp 0.3s ease-out;
+  }
+  
+  .mobile-scale-in {
+    animation: mobileScaleIn 0.2s ease-out;
+  }
+  
+  .mobile-bounce {
+    animation: mobileBounce 0.6s ease-out;
+  }
+  
+  .mobile-pulse {
+    animation: mobilePulse 1.5s ease-in-out infinite;
+  }
+  
+  .mobile-glow {
+    animation: mobileGlow 2s ease-in-out infinite;
+  }
+  
+  .mobile-shake {
+    animation: mobileShake 0.5s ease-in-out;
+  }
+  
+  .mobile-wiggle {
+    animation: mobileWiggle 0.5s ease-in-out;
+  }
+  
+  /* 移动端响应式文字大小 */
+  .mobile-text-xs { font-size: 12px; }
+  .mobile-text-sm { font-size: 14px; }
+  .mobile-text-base { font-size: 16px; }
+  .mobile-text-lg { font-size: 18px; }
+  .mobile-text-xl { font-size: 20px; }
+  .mobile-text-2xl { font-size: 24px; }
+  .mobile-text-3xl { font-size: 30px; }
+  
+  /* 移动端间距优化 */
+  .mobile-p-1 { padding: 4px; }
+  .mobile-p-2 { padding: 8px; }
+  .mobile-p-3 { padding: 12px; }
+  .mobile-p-4 { padding: 16px; }
+  .mobile-p-6 { padding: 24px; }
+  
+  .mobile-m-1 { margin: 4px; }
+  .mobile-m-2 { margin: 8px; }
+  .mobile-m-3 { margin: 12px; }
+  .mobile-m-4 { margin: 16px; }
+  .mobile-m-6 { margin: 24px; }
+  
+  /* 移动端网格系统 */
+  .mobile-grid-1 { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .mobile-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .mobile-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  
+  /* 移动端弹性布局 */
+  .mobile-flex-col { display: flex; flex-direction: column; }
+  .mobile-flex-row { display: flex; flex-direction: row; }
+  .mobile-flex-center { display: flex; align-items: center; justify-content: center; }
+  .mobile-flex-between { display: flex; align-items: center; justify-content: space-between; }
+  
+  /* 移动端隐藏/显示 */
+  .mobile-hidden { display: none !important; }
+  .mobile-block { display: block !important; }
+  .mobile-flex { display: flex !important; }
+  
+  /* 移动端固定定位优化 */
+  .mobile-fixed-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+  
+  .mobile-fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+  
+  /* 移动端全屏模式 */
+  .mobile-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    background: white;
+    overflow-y: auto;
+  }
+  
+  .dark .mobile-fullscreen {
+    background: #1a1a1a;
+  }
+  
+  /* 移动端模态框优化 */
+  .mobile-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+  }
+  
+  .mobile-modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: mobileSlideUp 0.3s ease-out;
+  }
+  
+  .dark .mobile-modal-content {
+    background: #2d2d2d;
+    color: white;
+  }
+  
+  /* 移动端下拉菜单优化 */
+  .mobile-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+    overflow: hidden;
+    animation: mobileSlideUp 0.2s ease-out;
+  }
+  
+  .dark .mobile-dropdown {
+    background: #2d2d2d;
+  }
+  
+  /* 移动端标签页优化 */
+  .mobile-tabs {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .mobile-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .mobile-tab {
+    flex-shrink: 0;
+    padding: 12px 16px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+  }
+  
+  .mobile-tab.active {
+    border-bottom-color: #4f46e5;
+    color: #4f46e5;
+  }
+  
+  /* 移动端加载状态优化 */
+  .mobile-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  
+  .mobile-loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #e5e7eb;
+    border-top: 2px solid #4f46e5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  /* 移动端错误状态优化 */
+  .mobile-error {
+    padding: 16px;
+    background: #fef2f2;
+    border-radius: 12px;
+    color: #dc2626;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .dark .mobile-error {
+    background: #7f1d1d;
+    color: #fca5a5;
+  }
+  
+  /* 移动端成功状态优化 */
+  .mobile-success {
+    padding: 16px;
+    background: #f0fdf4;
+    border-radius: 12px;
+    color: #16a34a;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .dark .mobile-success {
+    background: #14532d;
+    color: #86efac;
+  }
+  
+  /* 移动端警告状态优化 */
+  .mobile-warning {
+    padding: 16px;
+    background: #fffbeb;
+    border-radius: 12px;
+    color: #d97706;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .dark .mobile-warning {
+    background: #78350f;
+    color: #fcd34d;
+  }
+}
+
+/* 平板端优化 */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tablet-btn {
+    min-height: 40px;
+    min-width: 40px;
+    padding: 10px 14px;
+    font-size: 15px;
+    border-radius: 10px;
+  }
+  
+  .tablet-card {
+    margin: 12px;
+    padding: 20px;
+    border-radius: 14px;
+  }
+  
+  .tablet-input {
+    font-size: 15px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    min-height: 40px;
+  }
+  
+  .tablet-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .tablet-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .tablet-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+}
+
+/* 大屏幕优化 */
+@media (min-width: 1440px) {
+  .desktop-large {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .desktop-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .desktop-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .desktop-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+}
+
+/* 超宽屏优化 */
+@media (min-width: 2048px) {
+  .ultra-wide {
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+  
+  .ultra-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+  .ultra-grid-8 { display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; }
+}

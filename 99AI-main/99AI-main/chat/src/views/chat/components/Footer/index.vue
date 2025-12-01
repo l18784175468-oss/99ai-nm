@@ -1391,6 +1391,33 @@ const shouldShowButtonText = computed(() => {
   100% { background-position: 200% 0; }
 }
 
+@keyframes animate-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes ripple-expand {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* 按钮交互增强 */
 .group button {
   position: relative;
@@ -1586,7 +1613,7 @@ textarea:focus {
 
     <!-- Main footer content -->
     <div
-      class="flex flex-col items-center justify-center w-full"
+      class="flex flex-col items-center justify-center w-full footer-component"
       :class="[isMobile ? 'px-3 pb-3' : 'px-2']"
     >
       <footer
@@ -1598,10 +1625,10 @@ textarea:focus {
         @drop="handleDrop"
       >
         <div
-          class="flex w-full justify-center items-center flex-col rounded-3xl resize-none px-2 transition-all duration-300 relative overflow-hidden"
+          class="flex w-full justify-center items-center flex-col rounded-3xl resize-none px-2 transition-all duration-500 relative overflow-hidden"
           :class="{
             'ring-2 ring-primary-500/50 dark:ring-primary-400/50 shadow-2xl shadow-primary-500/20': isDragging,
-            'bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl': !isFileDraggingOverPage,
+            'bg-white/85 dark:bg-gray-800/85 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl': !isFileDraggingOverPage,
             'bg-gray-50/90 dark:bg-gray-700/90 backdrop-blur-xl border-2 border-dashed border-primary-300/50 dark:border-primary-600/50': isFileDraggingOverPage,
           }"
           :style="{ minHeight: '1.5rem' }"
@@ -1612,6 +1639,12 @@ textarea:focus {
           <div v-if="isDragging" class="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-purple-500/10 pointer-events-none animate-pulse"></div>
           <!-- 动态光效 -->
           <div class="absolute inset-0 bg-gradient-to-r from-primary-500/3 via-transparent to-purple-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          
+          <!-- 动态粒子背景 -->
+          <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute w-96 h-96 -bottom-48 -left-48 bg-primary-400/3 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute w-96 h-96 -bottom-48 -right-48 bg-purple-400/3 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+          </div>
           <!-- 应用搜索建议 -->
           <div
             v-if="showSuggestions && !isSelectedApp && searchResults.length !== 0"
@@ -1742,12 +1775,15 @@ textarea:focus {
               <!-- 悬停光晕 -->
               <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md pointer-events-none"></div>
               
+              <!-- 输入框装饰边框 -->
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/10 via-transparent to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+              
               <textarea
                 v-show="!isFileDraggingOverPage"
                 ref="inputRef"
                 v-model="prompt"
                 :placeholder="placeholderText"
-                class="relative w-full mt-3 mb-2 px-4 py-3 text-base resize-none bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-2xl placeholder:text-gray-500 dark:placeholder:text-gray-400 text-gray-800 dark:text-gray-200 custom-scrollbar transition-all duration-300 ease-in-out focus:bg-white/80 dark:focus:bg-gray-800/80 focus:border-primary-400/60 dark:focus:border-primary-500/60 focus:shadow-lg focus:shadow-primary-500/20 group-hover:bg-white/70 dark:group-hover:bg-gray-700/70 group-hover:border-primary-300/50 dark:group-hover:border-primary-600/50"
+                class="relative w-full mt-3 mb-2 px-4 py-3 text-base resize-none bg-white/70 dark:bg-gray-800/70 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-2xl placeholder:text-gray-500 dark:placeholder:text-gray-400 text-gray-800 dark:text-gray-200 custom-scrollbar transition-all duration-500 ease-in-out focus:bg-white/85 dark:focus:bg-gray-800/85 focus:border-primary-400/70 dark:focus:border-primary-500/70 focus:shadow-xl focus:shadow-primary-500/25 group-hover:bg-white/75 dark:group-hover:bg-gray-750/75 group-hover:border-primary-300/60 dark:group-hover:border-primary-600/60 focus:scale-[1.01] group-hover:scale-[1.005]"
                 @input="autoResize"
                 @keypress="handleEnter"
                 @keyup="handleInput"
@@ -1759,8 +1795,12 @@ textarea:focus {
                 aria-label="聊天消息输入框"
                 role="textbox"
               ></textarea>
+              
               <!-- 输入框装饰角 -->
               <div class="absolute top-1 right-1 w-3 h-3 bg-gradient-to-br from-primary-400 to-purple-500 rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+              
+              <!-- 输入框动态光效 -->
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-primary-500/5 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 pointer-events-none animate-shimmer"></div>
             </div>
           </div>
 
@@ -1773,19 +1813,19 @@ textarea:focus {
                 v-if="showUploadButton && !isUploading"
                 class="group relative"
                 @dragover.prevent="
-                  e => {
+                  (e: any) => {
                     e.stopPropagation()
                     isDragging = true
                   }
                 "
                 @dragleave.prevent="
-                  e => {
+                  (e: any) => {
                     e.stopPropagation()
                     isDragging = false
                   }
                 "
                 @drop.prevent="
-                  e => {
+                  (e: any) => {
                     e.stopPropagation()
                     isDragging = false
                     isFileDraggingOverPage = false
@@ -1795,27 +1835,31 @@ textarea:focus {
               >
                 <button
                   type="button"
-                  class="relative w-9 h-9 rounded-xl bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 flex items-center justify-center hover:bg-white dark:hover:bg-gray-600 transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg group overflow-hidden"
+                  class="relative w-10 h-10 rounded-2xl bg-white/75 dark:bg-gray-700/75 backdrop-blur-md border border-gray-200/60 dark:border-gray-600/60 flex items-center justify-center hover:bg-white dark:hover:bg-gray-600 transition-all duration-500 hover:scale-110 shadow-md hover:shadow-xl group overflow-hidden"
                   @click="triggerUpload"
                   :aria-label="uploadButtonTooltip"
                 >
-                  <Plus size="18" class="text-gray-600 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-all duration-300 relative z-10" />
+                  <Plus size="20" class="text-gray-600 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-all duration-500 relative z-10 group-hover:rotate-90" />
                   <!-- 悬停光晕 -->
-                  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/15 to-purple-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <!-- 波纹效果 -->
-                  <div class="absolute inset-0 rounded-xl bg-primary-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-primary-500/25 scale-0 group-active:scale-100 transition-transform duration-500"></div>
+                  <!-- 装饰环 -->
+                  <div class="absolute -inset-1 rounded-2xl border-2 border-primary-300/40 dark:border-primary-600/40 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                 </button>
                 <div v-if="!isMobile" class="tooltip tooltip-top">{{ uploadButtonTooltip }}</div>
               </div>
 
               <!-- 上传加载状态 -->
-              <div v-if="isUploading" class="relative w-9 h-9 rounded-xl bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50 flex items-center justify-center shadow-sm">
+              <div v-if="isUploading" class="relative w-10 h-10 rounded-2xl bg-white/75 dark:bg-gray-700/75 backdrop-blur-md border border-gray-200/60 dark:border-gray-600/50 flex items-center justify-center shadow-md">
                 <LoadingFour
-                  size="18"
+                  size="20"
                   class="animate-rotate text-primary-600 dark:text-primary-400"
                 />
                 <!-- 加载动画光环 -->
-                <div class="absolute inset-0 rounded-xl border-2 border-primary-500/30 animate-ping"></div>
+                <div class="absolute inset-0 rounded-2xl border-2 border-primary-500/40 animate-ping"></div>
+                <!-- 加载光晕 -->
+                <div class="absolute inset-0 rounded-2xl bg-primary-500/10 animate-pulse"></div>
               </div>
 
               <!-- 隐藏的文件输入框 -->
@@ -1832,11 +1876,11 @@ textarea:focus {
               <div v-if="shouldShowDeepThinking" class="group relative">
                 <button
                   type="button"
-                  class="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg overflow-hidden"
+                  class="relative w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 hover:scale-110 shadow-md hover:shadow-xl overflow-hidden"
                   :class="[
                     usingDeepThinking
-                      ? 'bg-gradient-to-r from-purple-500/30 to-pink-500/30 border-purple-300/60 dark:border-purple-600/60 text-purple-600 dark:text-purple-400 shadow-md'
-                      : 'bg-white/70 dark:bg-gray-700/70 border-gray-200/50 dark:border-gray-600/50 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-600'
+                      ? 'bg-gradient-to-r from-purple-500/40 to-pink-500/40 border-purple-300/70 dark:border-purple-600/70 text-purple-600 dark:text-purple-400 shadow-lg'
+                      : 'bg-white/75 dark:bg-gray-700/75 border-gray-200/60 dark:border-gray-600/60 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-600'
                   ]"
                   @click="usingDeepThinking = !usingDeepThinking"
                   role="button"
@@ -1844,13 +1888,17 @@ textarea:focus {
                   aria-label="启用或禁用推理功能"
                   tabindex="0"
                 >
-                  <TwoEllipses size="18" class="transition-transform duration-300 group-hover:scale-110" />
+                  <TwoEllipses size="20" class="transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12" />
                   <!-- 激活状态指示器 -->
-                  <div v-if="usingDeepThinking" class="absolute -top-1 -right-1 w-3 h-3 bg-purple-500 rounded-full animate-pulse shadow-md"></div>
+                  <div v-if="usingDeepThinking" class="absolute -top-1 -right-1 w-4 h-4 bg-purple-500 rounded-full animate-pulse shadow-lg">
+                    <div class="absolute inset-0 bg-purple-400 rounded-full animate-ping"></div>
+                  </div>
                   <!-- 悬停光晕 -->
-                  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/15 to-pink-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <!-- 波纹效果 -->
-                  <div class="absolute inset-0 rounded-xl bg-purple-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-purple-500/25 scale-0 group-active:scale-100 transition-transform duration-500"></div>
+                  <!-- 装饰环 -->
+                  <div class="absolute -inset-1 rounded-2xl border-2 border-purple-300/40 dark:border-purple-600/40 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                 </button>
                 <div v-if="!isMobile" class="tooltip tooltip-top">
                   AI 推理能力，帮助寻找更深层次的答案
@@ -1861,11 +1909,11 @@ textarea:focus {
               <div v-if="shouldShowNetworkSearch" class="group relative">
                 <button
                   type="button"
-                  class="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg overflow-hidden"
+                  class="relative w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 hover:scale-110 shadow-md hover:shadow-xl overflow-hidden"
                   :class="[
                     usingNetwork
-                      ? 'bg-gradient-to-r from-blue-500/30 to-cyan-500/30 border-blue-300/60 dark:border-blue-600/60 text-blue-600 dark:text-blue-400 shadow-md'
-                      : 'bg-white/70 dark:bg-gray-700/70 border-gray-200/50 dark:border-gray-600/50 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-600'
+                      ? 'bg-gradient-to-r from-blue-500/40 to-cyan-500/40 border-blue-300/70 dark:border-blue-600/70 text-blue-600 dark:text-blue-400 shadow-lg'
+                      : 'bg-white/75 dark:bg-gray-700/75 border-gray-200/60 dark:border-gray-600/60 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-600'
                   ]"
                   @click="usingNetwork = !usingNetwork"
                   role="button"
@@ -1873,13 +1921,17 @@ textarea:focus {
                   aria-label="启用或禁用网络搜索"
                   tabindex="0"
                 >
-                  <Sphere size="18" class="transition-transform duration-300 group-hover:rotate-180" />
+                  <Sphere size="20" class="transition-transform duration-500 group-hover:rotate-180 group-hover:scale-110" />
                   <!-- 激活状态指示器 -->
-                  <div v-if="usingNetwork" class="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse shadow-md"></div>
+                  <div v-if="usingNetwork" class="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full animate-pulse shadow-lg">
+                    <div class="absolute inset-0 bg-blue-400 rounded-full animate-ping"></div>
+                  </div>
                   <!-- 悬停光晕 -->
-                  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/15 to-cyan-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <!-- 波纹效果 -->
-                  <div class="absolute inset-0 rounded-xl bg-blue-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-blue-500/25 scale-0 group-active:scale-100 transition-transform duration-500"></div>
+                  <!-- 装饰环 -->
+                  <div class="absolute -inset-1 rounded-2xl border-2 border-blue-300/40 dark:border-blue-600/40 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                 </button>
                 <div v-if="!isMobile" class="tooltip tooltip-top">启用网络搜索，获取最新信息</div>
               </div>
@@ -1888,11 +1940,11 @@ textarea:focus {
               <div v-if="shouldShowMermaidTool" class="group relative">
                 <button
                   type="button"
-                  class="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-lg overflow-hidden"
+                  class="relative w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 hover:scale-110 shadow-md hover:shadow-xl overflow-hidden"
                   :class="[
                     usingMermaid
-                      ? 'bg-gradient-to-r from-green-500/30 to-emerald-500/30 border-green-300/60 dark:border-green-600/60 text-green-600 dark:text-green-400 shadow-md'
-                      : 'bg-white/70 dark:bg-gray-700/70 border-gray-200/50 dark:border-gray-600/50 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-600'
+                      ? 'bg-gradient-to-r from-green-500/40 to-emerald-500/40 border-green-300/70 dark:border-green-600/70 text-green-600 dark:text-green-400 shadow-lg'
+                      : 'bg-white/75 dark:bg-gray-700/75 border-gray-200/60 dark:border-gray-600/60 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-600'
                   ]"
                   @click="usingMermaid = !usingMermaid"
                   role="button"
@@ -1900,13 +1952,17 @@ textarea:focus {
                   aria-label="启用或禁用流程图功能"
                   tabindex="0"
                 >
-                  <TreeDiagram size="18" class="transition-transform duration-300 group-hover:rotate-90" />
+                  <TreeDiagram size="20" class="transition-transform duration-500 group-hover:rotate-90 group-hover:scale-110" />
                   <!-- 激活状态指示器 -->
-                  <div v-if="usingMermaid" class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-md"></div>
+                  <div v-if="usingMermaid" class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-pulse shadow-lg">
+                    <div class="absolute inset-0 bg-green-400 rounded-full animate-ping"></div>
+                  </div>
                   <!-- 悬停光晕 -->
-                  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-500/15 to-emerald-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <!-- 波纹效果 -->
-                  <div class="absolute inset-0 rounded-xl bg-green-500/20 scale-0 group-active:scale-100 transition-transform duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-green-500/25 scale-0 group-active:scale-100 transition-transform duration-500"></div>
+                  <!-- 装饰环 -->
+                  <div class="absolute -inset-1 rounded-2xl border-2 border-green-300/40 dark:border-green-600/40 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                 </button>
                 <div v-if="!isMobile" class="tooltip tooltip-top">
                   启用图表功能，支持Mermaid图表绘制
@@ -1920,19 +1976,21 @@ textarea:focus {
               <div v-if="!isStreamIn" class="group relative">
                 <button
                   type="button"
-                  class="relative w-10 h-10 rounded-2xl bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 overflow-hidden"
-                  :class="{ 'w-8 h-8': isMobile }"
+                  class="relative w-11 h-11 rounded-2xl bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700 hover:from-primary-600 hover:via-primary-700 hover:to-primary-800 text-white flex items-center justify-center transition-all duration-500 hover:scale-110 shadow-lg hover:shadow-2xl disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 overflow-hidden"
+                  :class="{ 'w-9 h-9': isMobile }"
                   :disabled="buttonDisabled"
                   @click="handleSubmit()"
                   aria-label="发送消息"
                 >
-                  <SendOne size="18" :class="{ 'text-sm': isMobile }" class="transition-transform duration-300 group-hover:scale-110 relative z-10" />
+                  <SendOne size="20" :class="{ 'text-sm': isMobile }" class="transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12 relative z-10" />
                   <!-- 按钮光晕 -->
-                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <!-- 按钮波纹效果 -->
                   <div class="absolute inset-0 rounded-2xl border border-white/30"></div>
                   <!-- 动态光环 -->
-                  <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
+                  <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-md"></div>
+                  <!-- 发送动画指示器 -->
+                  <div class="absolute -inset-2 rounded-2xl border-2 border-primary-400/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse"></div>
                 </button>
                 <div v-if="!isMobile" class="tooltip tooltip-top">发送消息</div>
               </div>
@@ -1941,20 +1999,22 @@ textarea:focus {
               <div v-if="isStreamIn" class="group relative">
                 <button
                   type="button"
-                  class="relative w-10 h-10 rounded-2xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden"
-                  :class="{ 'w-8 h-8': isMobile }"
+                  class="relative w-11 h-11 rounded-2xl bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:via-red-700 hover:to-red-800 text-white flex items-center justify-center transition-all duration-500 hover:scale-110 shadow-lg hover:shadow-2xl overflow-hidden"
+                  :class="{ 'w-9 h-9': isMobile }"
                   @click="handleStop()"
                   aria-label="停止生成"
                 >
-                  <Square size="18" :class="{ 'text-sm': isMobile }" class="transition-transform duration-300 group-hover:rotate-90 relative z-10" />
+                  <Square size="20" :class="{ 'text-sm': isMobile }" class="transition-transform duration-500 group-hover:rotate-90 group-hover:scale-110 relative z-10" />
                   <!-- 按钮光晕 -->
-                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <!-- 按钮波纹效果 -->
                   <div class="absolute inset-0 rounded-2xl border border-white/30"></div>
                   <!-- 停止动画指示器 -->
-                  <div class="absolute inset-0 rounded-2xl border-2 border-white/30 animate-ping"></div>
+                  <div class="absolute inset-0 rounded-2xl border-2 border-white/40 animate-ping"></div>
                   <!-- 动态光环 -->
-                  <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-red-500/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
+                  <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-red-500/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-md"></div>
+                  <!-- 紧急停止装饰 -->
+                  <div class="absolute -inset-2 rounded-2xl border-2 border-red-400/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse"></div>
                 </button>
                 <div v-if="!isMobile" class="tooltip tooltip-top">停止生成</div>
               </div>
